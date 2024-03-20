@@ -9,24 +9,20 @@ import Header from '../components/Header';
 import Input from '../components/Input';
 import ImageLogo from '../components/ImageLogo';
 
-const Login = () => {
+const CadastroConta = () => {
   const navigation = useNavigation();
 
-  const handleLoginPress = () => {
-    navigation.navigate('Cadastrar'); // Navega para a tela de Login
+  const handleAcountPress = () => {
+    navigation.navigate('Login'); // Navega para a tela de Login
   };
-  const handleGoMenu = () => {
-    navigation.navigate('Home'); // Navega para a tela Principal do app
-  };
-
   const handleCalcular = () => console.log('Salvo');
 
   return (
     <Container>
-      <Header title={'Login'} />
+      <Header title={'Criar Conta'} />
       <Body>
-        <ImageLogo>
-        </ImageLogo>
+        <ImageLogo></ImageLogo>
+        <Input label="Nome" />
         <Input label="Email" />
         <Input label="Senha" />
         <View style={styles.buttonContainer}>
@@ -39,14 +35,14 @@ const Login = () => {
           <Button
             style={styles.buttonR}
             mode="contained"
-            onPress={handleGoMenu}>
-            Logar
+            onPress={handleCalcular}>
+            Cadastrar
           </Button>
         </View>
         <View style={styles.legenda}>
-          <Text style={{ marginLeft: 10 }}>Ainda não tem conta?</Text>
-          <Button style={{ marginLeft: 15 }} onPress={handleLoginPress}>
-            Cadastrar
+          <Text style={{ marginLeft: 10 }}>Possui conta?</Text>
+          <Button style={{ marginLeft: 15 }} onPress={handleAcountPress}>
+            Fazer login
           </Button>
         </View>
       </Body>
@@ -79,4 +75,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default CadastroConta;

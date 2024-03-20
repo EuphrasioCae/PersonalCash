@@ -60,10 +60,16 @@ const App = () => {
           onChangeText={(text) => setTurnoTreino(text)}
         />
         <View style={styles.buttonContainer}>
-          <Button style={styles.buttonC} mode="contained" onPress={handleCalcular}>
+          <Button
+            style={styles.buttonC}
+            mode="contained"
+            onPress={handleCalcular}>
             Cancelar
           </Button>
-          <Button style={styles.buttonR} mode="contained" onPress={handleCalcular}>
+          <Button
+            style={styles.buttonR}
+            mode="contained"
+            onPress={handleCalcular}>
             Registrar
           </Button>
         </View>

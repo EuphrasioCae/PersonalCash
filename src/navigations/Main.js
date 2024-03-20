@@ -1,6 +1,8 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import CadastroConta from '../pages/CadastroConta';
+import Login from '../pages/Login';
 import Home from '../pages/Home';
 import Perfil from '../pages/Perfil';
 import CadastroCliente from '../pages/CadastroCliente';
@@ -10,7 +12,21 @@ const Stack = createNativeStackNavigator();
 
 const Main = () => {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator initialRouteName="CadastroConta">
+      <Stack.Screen
+        name="Cadastrar"
+        component={CadastroConta}
+        options={{
+          header: () => null,
+        }}
+      />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{
+          header: () => null,
+        }}
+      />
       <Stack.Screen
         name="Home"
         component={Home}
@@ -25,7 +41,7 @@ const Main = () => {
           header: () => null,
         }}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="Cadastro Cliente"
         component={CadastroCliente}
         options={{
