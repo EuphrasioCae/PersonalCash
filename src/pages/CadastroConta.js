@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Alert, Image } from 'react-native'; // Importe o componente Image corretamente
 import { Appbar, TextInput, Button, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -9,7 +9,13 @@ import Header from '../components/Header';
 import Input from '../components/Input';
 import ImageLogo from '../components/ImageLogo';
 
+//import {getContas, insertContas} from '../services/ContasServicesDB';
+
 const CadastroConta = () => {
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const navigation = useNavigation();
 
   const handleAcountPress = () => {
@@ -22,9 +28,25 @@ const CadastroConta = () => {
       <Header title={'Criar Conta'} />
       <Body>
         <ImageLogo></ImageLogo>
-        <Input label="Nome" />
-        <Input label="Email" />
-        <Input label="Senha" />
+        <Input 
+          label="Nome" 
+          value = {nome}
+          onChangeText={(text) => setNome(text)}
+          left={<TextInput.Icon name="account"/>}
+        />
+        <Input 
+          label="Email" 
+          value= {email}
+          onChangeText={(text) => setEmail(text)}
+          left={<TextInput.Icon name="email"/>}
+        />
+        <Input 
+          label="Senha" 
+          value= {password}
+          secureTextEntry
+          onChangeText={(text) => setPassword(text)}
+          left={<TextInput.Icon name="key"/>} 
+        />
         <View style={styles.buttonContainer}>
           <Button
             style={styles.buttonC}

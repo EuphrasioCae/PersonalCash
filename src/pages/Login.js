@@ -9,8 +9,14 @@ import Header from '../components/Header';
 import Input from '../components/Input';
 import ImageLogo from '../components/ImageLogo';
 
+import {useUser} from '../contexts/UserContext';
+
 const Login = () => {
   const navigation = useNavigation();
+  const {setSigned} = useUser();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLoginPress = () => {
     navigation.navigate('Cadastrar'); // Navega para a tela de Login
@@ -27,19 +33,30 @@ const Login = () => {
       <Body>
         <ImageLogo>
         </ImageLogo>
-        <Input label="Email" />
-        <Input label="Senha" />
+        <Input 
+          label="Email" 
+          value= {email}
+          onChangeText={(text) => setEmail(text)}
+          left={<TextInput.Icon name="email"/>}
+        />
+        <Input 
+          label="Senha"
+          value= {password}
+          secureTextEntry
+          onChangeText={(text) => setPassword(text)}
+          left={<TextInput.Icon name="key"/>}  
+        />
         <View style={styles.buttonContainer}>
           <Button
             style={styles.buttonC}
             mode="contained"
-            onPress={handleCalcular}>
+            onPress={(handleCalcular)}>
             Cancelar
           </Button>
           <Button
             style={styles.buttonR}
             mode="contained"
-            onPress={handleGoMenu}>
+            onPress={() => setSigned(true)}>
             Logar
           </Button>
         </View>

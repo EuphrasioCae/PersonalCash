@@ -9,9 +9,9 @@ import Container from '../components/Container';
 import Header from '../components/Header';
 import Input from '../components/Input';
 
-import { insertClientes, updateClientes} from '../services/ClientesServicesDB';
+import { insertClientes, updateClientes, deleteClientes } from '../services/ClientesServicesDB';
 
-const CadastroCliente = ({navigation, route}) => {
+const EditCliente = ({navigation, route}) => {
   const { cliente } = route.params ? route.params : {};
 
   const [date, setDate] = useState(new Date());
@@ -36,6 +36,7 @@ const CadastroCliente = ({navigation, route}) => {
 
   const handleCalcular = () => {
     if(cliente){
+      console.log(cliente);
 
       updateClientes(
         {
@@ -59,13 +60,18 @@ const CadastroCliente = ({navigation, route}) => {
         }
       ).then();
     }
-
     navigation.goBack();
+
     };
+
+  const handleExcluir = () =>{
+    deleteClientes(cliente.id).then();
+    navigation.goBack();
+  };
 
   return (
     <Container>
-      <Header title={'Cadastro de Cliente'} goBack={() => navigation.goBack()} />
+      <Header title={'Editar Cliente'} goBack={() => navigation.goBack()} />
       <Body>
         <Input
           label="Nome"
@@ -113,14 +119,14 @@ const CadastroCliente = ({navigation, route}) => {
           <Button
             style={styles.buttonC}
             mode="contained"
-            onPress={handleCalcular}>
-            Cancelar
+            onPress={handleExcluir}>
+            Excluir Cliente
           </Button>
           <Button
             style={styles.buttonR}
             mode="contained"
             onPress={handleCalcular}>
-            Adicionar
+            Salvar
           </Button>
         </View>
       </Body>
@@ -148,4 +154,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CadastroCliente;
+export default EditCliente;

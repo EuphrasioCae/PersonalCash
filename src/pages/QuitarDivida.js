@@ -159,11 +159,11 @@ const QuitarDivida = ({ route }) => {
             {'Dívida total R$' + item.valorTreino.toFixed(2)}
           </Text>
         </View>
-        
+
         <DataTable>
           <DataTable.Header>
             <DataTable.Title style={styles.cellStyles}>Data</DataTable.Title>
-            <DataTable.Title style={styles.cellStyles} numeric>Duração(min)</DataTable.Title>
+            <DataTable.Title style={styles.cellStyles} numeric>Duração</DataTable.Title>
             <DataTable.Title style={styles.cellStyles} numeric>Valor</DataTable.Title>
             <DataTable.Title style={styles.cellStyles}>Pago</DataTable.Title>
           </DataTable.Header>
@@ -171,7 +171,7 @@ const QuitarDivida = ({ route }) => {
           {items.slice(from, to).map((item, index) => (
             <DataTable.Row key={item.key}>
               <DataTable.Cell style={styles.cellStyles}>{item.data}</DataTable.Cell>
-              <DataTable.Cell style={styles.cellStyles} numeric>{item.duracao}</DataTable.Cell>
+              <DataTable.Cell style={styles.cellStyles} numeric>{item.duracao + ' min'}</DataTable.Cell>
               <DataTable.Cell style={styles.cellStyles} numeric>R$ {item.valor.toFixed(2)}</DataTable.Cell>
               <DataTable.Cell style={styles.cellStyles}>
                 <Checkbox

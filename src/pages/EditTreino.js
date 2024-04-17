@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-//import { Picker } from '@react-native-community/picker';
-import { Appbar, TextInput, Button } from 'react-native-paper';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
+//import {Picker} from '@react-native-community/picker';
+import { Appbar, TextInput, Button, Text } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 
@@ -10,19 +10,16 @@ import Container from '../components/Container';
 import Header from '../components/Header';
 import Input from '../components/Input';
 
-import { useNavigation } from '@react-navigation/native';
-import { insertTreinos, updateTreinos } from '../services/WorkoutServices';
-import { getClientes } from '../services/ClientesServicesDB';
+import { insertTreinos, updateTreinos, deleteTreinos } from '../services/WorkoutServices';
 
-const CadastroTreino = (route) => {
-  const navigation = useNavigation();
+const EditTreino = ({navigation, route}) => {
   const { treino } = route.params ? route.params : {};
 
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
 
   const [nome, setNome] = useState('');
-  const [data, setData] = useState('');
+  const [data, setData] = useState(moment(new Date()).format('DD/MM/YYYY'));
   const [inicio, setInicio] = useState('');
   const [duracao, setDuracao] = useState('');
   const [valor, setValor] = useState('');
@@ -32,15 +29,14 @@ const CadastroTreino = (route) => {
       setNome(treino.nome);
       setData(treino.data);
       setInicio(treino.inicio);
-      setDuracao(treino.duracao);
-      setValor(treino.valor.tofixed(2));
+      setDuracao(treino.duracao.toFixed(0));
+      setValor(treino.valor.toFixed(2));
     }
   }, [treino]);
 
   const handleCalcular = () => {
     if (treino) {
       console.log(treino);
-
       updateTreinos({
         nome: nome,
         data: data,
@@ -48,32 +44,33 @@ const CadastroTreino = (route) => {
         duracao: duracao,
         valor: valor,
         id: treino.id
-      }
-      ).then();
-    } 
-    else {
+      }).then();
+    } else {
       insertTreinos({
         nome: nome,
         data: data,
         inicio: inicio,
         duracao: duracao,
         valor: valor
-      }
-      ).then();
+      }).then();
     }
+    navigation.goBack();
+  };
+
+  const handleExcluir = () => {
+    deleteTreinos(treino.id).then();
     navigation.goBack();
   };
 
   return (
     <Container>
-      <Header title={'Cadastro de Treino'} goBack={() => navigation.goBack()} />
+      <Header title={'Editar Treino'} goBack={() => navigation.goBack()} />
       <Body>
         <Input
           label="Nome"
           value={nome}
           onChangeText={(text) => setNome(text)}
         />
-
         {show && (
           <DateTimePicker
             testID="dateTimePicker"
@@ -89,15 +86,15 @@ const CadastroTreino = (route) => {
           />
         )}
         <TouchableOpacity onPress={() => setShow(true)}>
-          <Input label="Data" value={data} editable={false} />
+          <Input label="Data do Cadastro" value={data} editable={false} />
         </TouchableOpacity>
         <Input
-          label="Início"
+          label="Inicio do treino"
           value={inicio}
           onChangeText={(text) => setInicio(text)}
         />
         <Input
-          label="Duração"
+          label="Duração do treino"
           value={duracao}
           onChangeText={(text) => setDuracao(text)}
           keyboardType="numeric" // Apenas números
@@ -108,18 +105,13 @@ const CadastroTreino = (route) => {
           onChangeText={(text) => setValor(text)}
           keyboardType="numeric" // Apenas números
         />
+
         <View style={styles.buttonContainer}>
-          <Button
-            style={styles.buttonC}
-            mode="contained"
-            onPress={handleCalcular}>
-            Cancelar
+          <Button style={styles.buttonC} mode="contained" onPress={handleExcluir}>
+            Excluir Treino
           </Button>
-          <Button
-            style={styles.buttonR}
-            mode="contained"
-            onPress={handleCalcular}>
-            Registrar
+          <Button style={styles.buttonR} mode="contained" onPress={handleCalcular}>
+            Salvar
           </Button>
         </View>
       </Body>
@@ -131,20 +123,20 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 15,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   buttonR: {
     backgroundColor: 'green',
     marginTop: 5,
     flex: 1,
-    marginLeft: 15,
+    marginLeft: 15
   },
   buttonC: {
     backgroundColor: 'red',
     marginTop: 5,
     flex: 1,
-    marginRight: 15,
-  },
+    marginRight: 15
+  }
 });
 
-export default CadastroTreino;
+export default EditTreino;
