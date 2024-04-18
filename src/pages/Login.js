@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Alert, Image } from 'react-native'; // Importe o componente Image corretamente
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Alert, Image } from 'react-native';
 import { Appbar, TextInput, Button, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
@@ -9,54 +9,105 @@ import Header from '../components/Header';
 import Input from '../components/Input';
 import ImageLogo from '../components/ImageLogo';
 
-import {useUser} from '../contexts/UserContext';
+import { useUser } from '../contexts/UserContext';
+import { getPerfil } from '../services/PerfilServices';
+import { useIsFocused } from '@react-navigation/native';
 
-const Login = () => {
+
+const Login = (route) => {
   const navigation = useNavigation();
-  const {setSigned} = useUser();
+  const { perfil } = route.params ? route.params : {};
+  const isFocused = useIsFocused();
 
+  const { setSigned } = useUser();
+
+  const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLoginPress = () => {
-    navigation.navigate('Cadastrar'); // Navega para a tela de Login
-  };
-  const handleGoMenu = () => {
-    navigation.navigate('Home'); // Navega para a tela Principal do app
+  const [perfis, setPerfis] = useState([]);
+  useEffect(() => {
+
+    getPerfil().then((dados) => {
+        setPerfis(dados);
+        //console.log(dados);
+      });
+
+  },[isFocused]);
+
+  const handleCancel = () =>{
+    setNome('');
+    setEmail('');
+    setPassword('');
   };
 
-  const handleCalcular = () => console.log('Salvo');
+  const handleLoginPress = () => {
+    navigation.navigate('Cadastrar');
+  };
+
+  const handleGoMenu = async () => {
+  if (!nome || !email || !password) {
+    Alert.alert('Por favor, preencha todos os campos.');
+    return;
+  }
+
+  // Find the profile with the entered email
+  const foundProfile = perfis.find(profile => profile.email === email && profile.nome === nome && profile.password === password);
+
+  if (foundProfile) {
+    // Check if the entered password matches the profile's password
+    if (foundProfile) {
+      setSigned(true);
+      navigation.navigate('Home');
+    } else {
+      setSigned(false);
+      Alert.alert('Nome, Email ou Senha inválidos');
+    }
+  } else {
+    setSigned(false);
+    Alert.alert('Não foi possível encontrar a conta com o nome, email e senha fornecidos');
+  }
+};
+
+
+  const checkCredentials = async (nome, email, password) => {
+    const perfil = await getPerfil({nome: nome, email, password});
+    if (perfil) {
+      return perfil;
+    } else {
+      return null;
+    }
+  };
 
   return (
     <Container>
       <Header title={'Login'} />
       <Body>
-        <ImageLogo>
-        </ImageLogo>
+        <ImageLogo />
         <Input 
-          label="Email" 
-          value= {email}
-          onChangeText={(text) => setEmail(text)}
-          left={<TextInput.Icon name="email"/>}
+          label="Nome" 
+          value = {nome}
+          onChangeText={(text) => setNome(text)}
+          left={<TextInput.Icon name="account"/>}
         />
-        <Input 
+        <Input
+          label="Email"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          left={<TextInput.Icon name="email" />}
+        />
+        <Input
           label="Senha"
-          value= {password}
+          value={password}
           secureTextEntry
           onChangeText={(text) => setPassword(text)}
-          left={<TextInput.Icon name="key"/>}  
+          left={<TextInput.Icon name="key" />}
         />
         <View style={styles.buttonContainer}>
-          <Button
-            style={styles.buttonC}
-            mode="contained"
-            onPress={(handleCalcular)}>
+          <Button style={styles.buttonC} mode="contained" onPress={handleCancel}>
             Cancelar
           </Button>
-          <Button
-            style={styles.buttonR}
-            mode="contained"
-            onPress={() => setSigned(true)}>
+          <Button style={styles.buttonR} mode="contained" onPress={handleGoMenu}>
             Logar
           </Button>
         </View>

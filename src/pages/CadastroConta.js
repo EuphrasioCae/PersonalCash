@@ -9,19 +9,89 @@ import Header from '../components/Header';
 import Input from '../components/Input';
 import ImageLogo from '../components/ImageLogo';
 
-//import {getContas, insertContas} from '../services/ContasServicesDB';
+import { getPerfil, insertPerfil, updatePerfil} from '../services/PerfilServices';
+import { useIsFocused } from '@react-navigation/native';
 
-const CadastroConta = () => {
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const CadastroConta = (route) => {
 
+  const { perfil } = route.params ? route.params : {};
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
+
 
   const handleAcountPress = () => {
     navigation.navigate('Login'); // Navega para a tela de Login
   };
-  const handleCalcular = () => console.log('Salvo');
+
+  const handleCancel = () =>{
+    setNome('');
+    setEmail('');
+    setPassword('');
+  };
+
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const [perfis, setPerfis] = useState([]);
+  useEffect(() => {
+
+    getPerfil().then((dados) => {
+        setPerfis(dados);
+        //console.log(dados);
+      });
+
+  },[isFocused]);
+
+  useEffect(() => {
+    if (perfil) {
+      setNome(perfil.nome);
+      setEmail(perfil.email);
+      setPassword(perfil.password);
+    }
+  }, [perfil]);
+
+  const handleCalcular = () => {
+  // Find the profile with the entered email
+  const foundProfile = perfis.find(profile => profile.email === email && profile.nome === nome && profile.password === password);
+
+  // Verificar se os campos estão vazios
+  if (!nome || !email || !password) {
+    Alert.alert('Por favor, preencha todos os campos.');
+    return; // Retorna se algum campo estiver vazio
+    }
+    
+    
+  if (foundProfile) {
+    Alert.alert('Nome ou Email já cadastrados');
+    return;
+  }
+
+    if (perfil) {
+      updatePerfil({
+        nome: nome,
+        email: email,
+        password: password,
+        id: perfil.id
+      }).then(() => {
+        Alert.alert('Sucesso', 'Conta criada com sucesso!');
+        setTimeout(() => {
+          navigation.navigate('Login');
+        }, 1000);
+      });
+    } else {
+      insertPerfil({
+        nome: nome,
+        email: email,
+        password: password
+      }).then(() => {
+        Alert.alert('Sucesso', 'Conta criada com sucesso!');
+        setTimeout(() => {
+          navigation.navigate('Login');
+        }, 1000);
+      });
+    }
+  };
 
   return (
     <Container>
@@ -51,7 +121,7 @@ const CadastroConta = () => {
           <Button
             style={styles.buttonC}
             mode="contained"
-            onPress={handleCalcular}>
+            onPress={handleCancel}>
             Cancelar
           </Button>
           <Button

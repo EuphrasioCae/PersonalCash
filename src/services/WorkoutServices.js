@@ -10,16 +10,16 @@ export const getTreinos = async () => {
 
 // Inserir
 export const insertTreinos = async (param) => {
-  let results = await DB_EXEC_WORKOUT(`insert into treinos( nome, data, inicio, duracao, valor) values(?,?,?,?,?)`, 
-    [param.nome, param.data, param.inicio, param.duracao, param.valor]);
+  let results = await DB_EXEC_WORKOUT(`insert into treinos( nome, data, inicio, duracao, valor, pago) values(?,?,?,?,?,?)`, 
+    [param.nome, param.data, param.inicio, param.duracao, param.valor, param.pago]);
     //console.log(results);
   return results.rowsAffected;
 }
 
 // Editar
 export const updateTreinos = async (param) => {
-  let results = await DB_EXEC_WORKOUT(`update treinos set nome=?, data=?, inicio=?, duracao=?, valor=? where id=?`, 
-    [param.nome, param.data, param.inicio, param.duracao, param.valor, param.id]);
+  let results = await DB_EXEC_WORKOUT(`update treinos set nome=?, data=?, inicio=?, duracao=?, valor=?, pago=? where id=?`, 
+    [param.nome, param.data, param.inicio, param.duracao, param.valor, param.pago, param.id]);
     //console.log(results);
   return results.rowsAffected;
 }

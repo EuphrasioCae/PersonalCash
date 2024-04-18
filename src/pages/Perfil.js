@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
 import { Appbar, TextInput, Button, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Importe o ícone necessário
@@ -9,10 +9,54 @@ import Container from '../components/Container';
 import Header from '../components/Header';
 import Input from '../components/Input';
 
-const Perfil = () => {
+import { insertPerfil, updatePerfil} from '../services/PerfilServices';
 
-  const handleCalcular = () => console.log('Salvo');
-  
+const Perfil = ( route ) => {
+
+  const { perfil } = route.params ? route.params : {};
+
+  const handleCancel = () =>{
+    setNome('');
+    setEmail('');
+    setPassword('');
+  };
+
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    if (perfil) {
+      setNome(perfil.nome);
+      setEmail(perfil.email);
+      setPassword(perfil.password);
+    }
+  }, [perfil]);
+
+  const handleCalcular = () => {
+    if(perfil){
+      //console.log(perfis);
+
+      updatePerfil(
+        {
+          nome: nome,
+          email: email,
+          password: password,
+          id: perfil.id
+        }
+      ).then();
+      
+    }else{
+      insertPerfil(
+        {
+          nome: nome,
+          email: email,
+          password: password
+        }
+      ).then();
+    }
+    };
+
   return (
     <Container>
       <Header title={'Perfil'} />
@@ -22,15 +66,21 @@ const Perfil = () => {
       </View>
       <Input
           label="Nome"
+          value={nome}
+          onChangeText={(text) => setNome(text)}
       />
       <Input
           label="Email"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
       />
       <Input
           label="Senha"
+          value={password}
+          onChangeText={(text) => setPassword(text)}
       />
       <View style={styles.buttonContainer}>
-          <Button style={styles.buttonC} mode="contained" onPress={handleCalcular}>
+          <Button style={styles.buttonC} mode="contained" onPress={handleCancel}>
             Cancelar
           </Button>
           <Button style={styles.buttonR} mode="contained" onPress={handleCalcular}>

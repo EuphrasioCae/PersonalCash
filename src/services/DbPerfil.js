@@ -1,12 +1,12 @@
 import * as SQLite from 'expo-sqlite';
 
-const DataBaseWorkout = {
+const DataBasePerfil = {
   getConnection: () => {
-    const db = SQLite.openDatabase('workout.db');
+    const db = SQLite.openDatabase('perfilPersonalCash.db');
 
     db.transaction((tx) => {
       tx.executeSql(
-        'create table if not exists treinos(id integer primary key not null, nome text not null, data text not null, inicio text not null, duracao int not null, valor real not null, pago int not null)');
+        'create table if not exists perfil(id integer primary key not null, nome text not null, email text not null, password text not null)');
     });
 
     const ExecuteQuery = (sql, params = []) => {
@@ -30,5 +30,5 @@ const DataBaseWorkout = {
   },
 };
 
-export default DataBaseWorkout;
+export default DataBasePerfil;
 

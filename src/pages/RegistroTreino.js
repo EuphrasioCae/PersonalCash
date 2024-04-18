@@ -9,6 +9,7 @@ import Header from '../components/Header';
 
 import { useIsFocused } from '@react-navigation/native';
 import { getTreinos } from '../services/WorkoutServices';
+//import { getClientes } from '../services/ClientesServicesDB';
 import { useNavigation } from '@react-navigation/native';
 
 const RegistroTreino = () => {
@@ -27,6 +28,11 @@ const RegistroTreino = () => {
     <TouchableOpacity onPress={() => navigation.navigate('EditTreino', { treino })} key={treino.key}>
       <DataTable.Row>
         <DataTable.Cell style={styles.cellLine}>{treino.nome}</DataTable.Cell>
+      {/* Renderizar os clientes dentro desta linha de treino
+        {clientes.map((cliente) => (
+        <DataTable.Cell key={cliente.id} style={styles.cellLine}>{cliente.nome}</DataTable.Cell>
+        ))}
+          {/* Restante das células */}
         <DataTable.Cell style={styles.cellLine}>{treino.data}</DataTable.Cell>
         <DataTable.Cell style={styles.cellLine}>{treino.inicio}</DataTable.Cell>
         <DataTable.Cell style={styles.cellLine}>{treino.duracao}</DataTable.Cell>
@@ -44,7 +50,7 @@ const RegistroTreino = () => {
           <DataTable.Title style={styles.cellStyles}>Nome</DataTable.Title>
           <DataTable.Title style={styles.cellStyles}>Data</DataTable.Title>
           <DataTable.Title style={styles.cellStyles}>Início</DataTable.Title>
-          <DataTable.Title style={styles.cellStyles}>Duração</DataTable.Title>
+          <DataTable.Title style={styles.cellStyles}>Duração (min)</DataTable.Title>
           <DataTable.Title style={styles.cellStyles}>Valor</DataTable.Title>
         </DataTable.Header>
         {renderTreinos}
@@ -83,4 +89,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegistroTreino;
+export default RegistroTreino

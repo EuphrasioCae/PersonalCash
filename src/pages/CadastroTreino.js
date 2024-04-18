@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-//import { Picker } from '@react-native-community/picker';
 import { Appbar, TextInput, Button } from 'react-native-paper';
+import { Picker } from '@react-native-community/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 
@@ -11,8 +11,8 @@ import Header from '../components/Header';
 import Input from '../components/Input';
 
 import { useNavigation } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import { insertTreinos, updateTreinos } from '../services/WorkoutServices';
-import { getClientes } from '../services/ClientesServicesDB';
 
 const CadastroTreino = (route) => {
   const navigation = useNavigation();
@@ -26,6 +26,7 @@ const CadastroTreino = (route) => {
   const [inicio, setInicio] = useState('');
   const [duracao, setDuracao] = useState('');
   const [valor, setValor] = useState('');
+  const [pago, setPago] = useState(0);
 
   useEffect(() => {
     if (treino) {
@@ -34,6 +35,7 @@ const CadastroTreino = (route) => {
       setInicio(treino.inicio);
       setDuracao(treino.duracao);
       setValor(treino.valor.tofixed(2));
+      setPago(treino.pago == 0);
     }
   }, [treino]);
 
@@ -47,19 +49,18 @@ const CadastroTreino = (route) => {
         inicio: inicio,
         duracao: duracao,
         valor: valor,
-        id: treino.id
-      }
-      ).then();
-    } 
-    else {
+        pago: pago,
+        id: treino.id,
+      }).then();
+    } else {
       insertTreinos({
         nome: nome,
         data: data,
         inicio: inicio,
         duracao: duracao,
-        valor: valor
-      }
-      ).then();
+        valor: valor,
+        pago: pago,
+      }).then();
     }
     navigation.goBack();
   };
@@ -73,7 +74,31 @@ const CadastroTreino = (route) => {
           value={nome}
           onChangeText={(text) => setNome(text)}
         />
+        {/*  FAZER DEPOIS SE DER TEMPO
+        <Picker
+          selectedValue={selectedCliente}
+          style={styles.picker}
+          onValueChange={(itemValue, itemIndex) => {
+            setSelectedCliente(itemValue);
+            if (itemValue) {
+              // Verifica se itemValue não é nulo
+              setSelectedClientName(itemValue.nome); // Armazene o nome do cliente selecionado
+            } else {
+              setSelectedClientName(' '); // Se itemValue for nulo, defina o nome do cliente como vazio
+            }
+          }}
+        >
 
+          <Picker.Item label="Selecione um cliente" value={null} />
+          {clientes.map((cliente) => (
+            <Picker.Item
+              key={cliente.id}
+              label={cliente.nome + ' ' + cliente.sobrenome} 
+              value={cliente}
+            />
+          ))}
+        </Picker>
+        */}
         {show && (
           <DateTimePicker
             testID="dateTimePicker"
@@ -97,7 +122,7 @@ const CadastroTreino = (route) => {
           onChangeText={(text) => setInicio(text)}
         />
         <Input
-          label="Duração"
+          label="Duração (min)"
           value={duracao}
           onChangeText={(text) => setDuracao(text)}
           keyboardType="numeric" // Apenas números
@@ -145,6 +170,15 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 15,
   },
+  /*picker: {
+    height: 50,
+    width: '100%',
+    marginBottom: 10,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+  },*/
 });
 
 export default CadastroTreino;

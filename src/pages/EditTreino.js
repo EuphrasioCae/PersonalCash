@@ -23,6 +23,7 @@ const EditTreino = ({navigation, route}) => {
   const [inicio, setInicio] = useState('');
   const [duracao, setDuracao] = useState('');
   const [valor, setValor] = useState('');
+  const [pago, setPago] = useState(0);
 
   useEffect(() => {
     if (treino) {
@@ -31,6 +32,7 @@ const EditTreino = ({navigation, route}) => {
       setInicio(treino.inicio);
       setDuracao(treino.duracao.toFixed(0));
       setValor(treino.valor.toFixed(2));
+      setPago(treino.pago == 0);
     }
   }, [treino]);
 
@@ -43,6 +45,7 @@ const EditTreino = ({navigation, route}) => {
         inicio: inicio,
         duracao: duracao,
         valor: valor,
+        pago: pago,
         id: treino.id
       }).then();
     } else {
@@ -51,7 +54,8 @@ const EditTreino = ({navigation, route}) => {
         data: data,
         inicio: inicio,
         duracao: duracao,
-        valor: valor
+        valor: valor,
+        pago: pago
       }).then();
     }
     navigation.goBack();
@@ -94,7 +98,7 @@ const EditTreino = ({navigation, route}) => {
           onChangeText={(text) => setInicio(text)}
         />
         <Input
-          label="Duração do treino"
+          label="Duração do treino em (min)"
           value={duracao}
           onChangeText={(text) => setDuracao(text)}
           keyboardType="numeric" // Apenas números

@@ -19,16 +19,16 @@
     "expo-constants": "~14.2.1",
     "@expo/vector-icons": "^13.0.0",
     "react-native-paper": "4.12.6",
+    "react-native-picker": "*",
     "react-native-screens": "~3.20.0",
     "@react-navigation/stack": "*",
     "@react-navigation/native": "*",
     "react-native-vector-icons": "*",
     "react-native-gesture-handler": "~2.9.0",
+    "@react-native-community/picker": "*",
     "@react-navigation/native-stack": "*",
     "react-native-safe-area-context": "4.5.0",
-    "@react-native-community/datetimepicker": "6.7.3",
-    "react-native-picker": "*",
-    "@react-native-community/picker": "*"
+    "@react-native-community/datetimepicker": "6.7.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
