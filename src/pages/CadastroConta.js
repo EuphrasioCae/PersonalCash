@@ -9,7 +9,7 @@ import Header from '../components/Header';
 import Input from '../components/Input';
 import ImageLogo from '../components/ImageLogo';
 
-import { getPerfil, insertPerfil, updatePerfil} from '../services/PerfilServices';
+import { getPerfil, insertPerfil, updatePerfil } from '../services/PerfilServices';
 import { useIsFocused } from '@react-navigation/native';
 
 const CadastroConta = (route) => {
@@ -23,7 +23,7 @@ const CadastroConta = (route) => {
     navigation.navigate('Login'); // Navega para a tela de Login
   };
 
-  const handleCancel = () =>{
+  const handleCancel = () => {
     setNome('');
     setEmail('');
     setPassword('');
@@ -37,11 +37,11 @@ const CadastroConta = (route) => {
   useEffect(() => {
 
     getPerfil().then((dados) => {
-        setPerfis(dados);
-        //console.log(dados);
-      });
+      setPerfis(dados);
+      //console.log(dados);
+    });
 
-  },[isFocused]);
+  }, [isFocused]);
 
   useEffect(() => {
     if (perfil) {
@@ -52,20 +52,31 @@ const CadastroConta = (route) => {
   }, [perfil]);
 
   const handleCalcular = () => {
-  // Find the profile with the entered email
-  const foundProfile = perfis.find(profile => profile.email === email && profile.nome === nome && profile.password === password);
+    // Find the profile with the entered email
+    const foundProfile = perfis.find(profile => profile.email === email && profile.nome === nome && profile.password === password);
 
-  // Verificar se os campos estão vazios
-  if (!nome || !email || !password) {
-    Alert.alert('Por favor, preencha todos os campos.');
-    return; // Retorna se algum campo estiver vazio
+    // Verificar se os campos estão vazios
+    if (!nome || !email || !password) {
+      Alert.alert('Por favor, preencha todos os campos.');
+      return; // Retorna se algum campo estiver vazio
     }
-    
-    
-  if (foundProfile) {
-    Alert.alert('Nome ou Email já cadastrados');
-    return;
-  }
+
+    // Validar o formato do email
+    if (!validateEmail(email)) {
+      Alert.alert('Email inválido. Por favor, insira um email válido.');
+      return;
+    }
+
+    // Validar a senha
+    if (!validatePassword(password)) {
+      Alert.alert('Senha inválida. A senha deve conter no mínimo seis caracteres e pelo menos um caracter especial.');
+      return;
+    }
+
+    if (foundProfile) {
+      Alert.alert('Nome ou Email já cadastrados');
+      return;
+    }
 
     if (perfil) {
       updatePerfil({
@@ -93,29 +104,41 @@ const CadastroConta = (route) => {
     }
   };
 
+  // Função para validar o formato do email
+  const validateEmail = (email) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
+
+  // Função para validar a senha
+  const validatePassword = (password) => {
+    // Verifica se a senha tem pelo menos seis caracteres e pelo menos um caracter especial
+    return password.length >= 6 && /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(password);
+  };
+
   return (
     <Container>
       <Header title={'Criar Conta'} />
       <Body>
         <ImageLogo></ImageLogo>
-        <Input 
-          label="Nome" 
-          value = {nome}
+        <Input
+          label="Nome"
+          value={nome}
           onChangeText={(text) => setNome(text)}
-          left={<TextInput.Icon name="account"/>}
+          left={<TextInput.Icon name="account" />}
         />
-        <Input 
-          label="Email" 
-          value= {email}
+        <Input
+          label="Email"
+          value={email}
           onChangeText={(text) => setEmail(text)}
-          left={<TextInput.Icon name="email"/>}
+          left={<TextInput.Icon name="email" />}
         />
-        <Input 
-          label="Senha" 
-          value= {password}
+        <Input
+          label="Senha"
+          value={password}
           secureTextEntry
           onChangeText={(text) => setPassword(text)}
-          left={<TextInput.Icon name="key"/>} 
+          left={<TextInput.Icon name="key" />}
         />
         <View style={styles.buttonContainer}>
           <Button

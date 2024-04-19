@@ -3,14 +3,14 @@ import { StyleSheet, View, Alert } from 'react-native';
 import { Appbar, TextInput, Button, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Importe o ícone necessário
 
-import {usePerfil} from '../contexts/PerfilContext';
+import { usePerfil } from '../contexts/PerfilContext';
 
 import Body from '../components/Body';
 import Container from '../components/Container';
 import Header from '../components/Header';
 import Input from '../components/Input';
 
-import { insertPerfil, updatePerfil} from '../services/PerfilServices';
+import { insertPerfil, updatePerfil } from '../services/PerfilServices';
 
 const Perfil = () => {
   const { foundProfile } = usePerfil();
@@ -28,34 +28,63 @@ const Perfil = () => {
   }, [foundProfile]);
 
   const handleCalcular = () => {
+
+    // Validar os inputs (se estão vazios ou não)
     if (!nome || !email || !password) {
-    Alert.alert('Por favor, preencha todos os campos.');
-    return;
-  }
+      Alert.alert('Por favor, preencha todos os campos.');
+      return;
+    }
+
+    // Validar o formato do email
+    if (!validateEmail(email)) {
+      Alert.alert('Email inválido. Por favor, insira um email válido.');
+      return;
+    }
+
+    // Validar a senha
+    if (!validatePassword(password)) {
+      Alert.alert('Senha inválida. A senha deve conter no mínimo seis caracteres e pelo menos um caracter especial.');
+      return;
+    }
+
     if (foundProfile) {
       updatePerfil({
         nome: nome,
         email: email,
         password: password,
-        id: foundProfile.id
-      }).then(() => {
+        id: foundProfile.id,
+      })
+        .then(() => {
           Alert.alert('Conta editada com sucesso');
         })
         .catch((error) => {
           console.error('Erro ao editar conta:', error);
         });
-    }  else {
+    } else {
       insertPerfil({
         nome: nome,
         email: email,
-        password: password
-      }).then(() => {
+        password: password,
+      })
+        .then(() => {
           Alert.alert('Conta editada');
         })
         .catch((error) => {
           console.error('Erro ao criar conta:', error);
         });
     }
+  };
+  
+  // Função para validar o formato do email
+  const validateEmail = (email) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
+
+  // Função para validar a senha
+  const validatePassword = (password) => {
+    // Verifica se a senha tem pelo menos seis caracteres e pelo menos um caracter especial
+    return password.length >= 6 && /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(password);
   };
 
   return (
@@ -82,7 +111,10 @@ const Perfil = () => {
           onChangeText={(text) => setPassword(text)}
         />
         <View style={styles.buttonContainer}>
-          <Button style={styles.buttonR} mode="contained" onPress={handleCalcular}>
+          <Button
+            style={styles.buttonR}
+            mode="contained"
+            onPress={handleCalcular}>
             Editar
           </Button>
         </View>
