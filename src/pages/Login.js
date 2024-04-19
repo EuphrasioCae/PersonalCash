@@ -9,16 +9,17 @@ import Header from '../components/Header';
 import Input from '../components/Input';
 import ImageLogo from '../components/ImageLogo';
 
+import { usePerfil } from '../contexts/PerfilContext';
 import { useUser } from '../contexts/UserContext';
 import { getPerfil } from '../services/PerfilServices';
 import { useIsFocused } from '@react-navigation/native';
 
 
-const Login = (route) => {
-  const navigation = useNavigation();
-  const { perfil } = route.params ? route.params : {};
+const Login = ({ navigation }) => {
+  
   const isFocused = useIsFocused();
 
+  const { setFoundProfile } = usePerfil();
   const { setSigned } = useUser();
 
   const [nome, setNome] = useState('');
@@ -57,7 +58,9 @@ const Login = (route) => {
   if (foundProfile) {
     // Check if the entered password matches the profile's password
     if (foundProfile) {
+      console.log(foundProfile);  // Aqui verifico qual usuário que está logando
       setSigned(true);
+      setFoundProfile(foundProfile);
       navigation.navigate('Home');
     } else {
       setSigned(false);
@@ -68,16 +71,6 @@ const Login = (route) => {
     Alert.alert('Não foi possível encontrar a conta com o nome, email e senha fornecidos');
   }
 };
-
-
-  const checkCredentials = async (nome, email, password) => {
-    const perfil = await getPerfil({nome: nome, email, password});
-    if (perfil) {
-      return perfil;
-    } else {
-      return null;
-    }
-  };
 
   return (
     <Container>

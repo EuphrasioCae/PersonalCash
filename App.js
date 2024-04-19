@@ -5,17 +5,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import Route from './src/navigations/Route';
 
 import UserProvider from './src/contexts/UserContext';
+import { PerfilProvider } from './src/contexts/PerfilContext';
 
 const App = () => {
-
   return (
     <UserProvider>
-    <NavigationContainer>
-     <Route />
-    </NavigationContainer>
+      <PerfilProvider>
+        <NavigationContainer>
+          <Route />
+        </NavigationContainer>
+      </PerfilProvider>
     </UserProvider>
-  )
-
-}
+  );
+};
 
 export default App;

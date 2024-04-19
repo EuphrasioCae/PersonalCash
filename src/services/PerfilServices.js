@@ -12,7 +12,7 @@ export const getPerfil = async () => {
 export const insertPerfil = async (param) => {
   let results = await DB_EXEC(`insert into perfil(nome, email, password) values(?,?,?)`, 
     [param.nome, param.email, param.password]);
-    console.log(results);
+    //console.log(results);
   return results.rowsAffected;
 }
 

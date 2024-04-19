@@ -3,6 +3,7 @@ import { StyleSheet, View, Alert } from 'react-native';
 import { Appbar, TextInput, Button, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Importe o ícone necessário
 
+import {usePerfil} from '../contexts/PerfilContext';
 
 import Body from '../components/Body';
 import Container from '../components/Container';
@@ -11,78 +12,76 @@ import Input from '../components/Input';
 
 import { insertPerfil, updatePerfil} from '../services/PerfilServices';
 
-const Perfil = ( route ) => {
-
-  const { perfil } = route.params ? route.params : {};
-
-  const handleCancel = () =>{
-    setNome('');
-    setEmail('');
-    setPassword('');
-  };
+const Perfil = () => {
+  const { foundProfile } = usePerfil();
 
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   useEffect(() => {
-    if (perfil) {
-      setNome(perfil.nome);
-      setEmail(perfil.email);
-      setPassword(perfil.password);
+    if (foundProfile) {
+      setNome(foundProfile.nome);
+      setEmail(foundProfile.email);
+      setPassword(foundProfile.password);
     }
-  }, [perfil]);
+  }, [foundProfile]);
 
   const handleCalcular = () => {
-    if(perfil){
-      //console.log(perfis);
-
-      updatePerfil(
-        {
-          nome: nome,
-          email: email,
-          password: password,
-          id: perfil.id
-        }
-      ).then();
-      
-    }else{
-      insertPerfil(
-        {
-          nome: nome,
-          email: email,
-          password: password
-        }
-      ).then();
+    if (!nome || !email || !password) {
+    Alert.alert('Por favor, preencha todos os campos.');
+    return;
+  }
+    if (foundProfile) {
+      updatePerfil({
+        nome: nome,
+        email: email,
+        password: password,
+        id: foundProfile.id
+      }).then(() => {
+          Alert.alert('Conta editada com sucesso');
+        })
+        .catch((error) => {
+          console.error('Erro ao editar conta:', error);
+        });
+    }  else {
+      insertPerfil({
+        nome: nome,
+        email: email,
+        password: password
+      }).then(() => {
+          Alert.alert('Conta editada');
+        })
+        .catch((error) => {
+          console.error('Erro ao criar conta:', error);
+        });
     }
-    };
+  };
 
   return (
     <Container>
       <Header title={'Perfil'} />
       <Body>
-      <View style={styles.iconContainer}>
+        <View style={styles.iconContainer}>
           <Icon name="account-circle" size={125} color="black" />
-      </View>
-      <Input
+        </View>
+        <Input
           label="Nome"
           value={nome}
           onChangeText={(text) => setNome(text)}
-      />
-      <Input
+        />
+        <Input
           label="Email"
           value={email}
           onChangeText={(text) => setEmail(text)}
-      />
-      <Input
+        />
+        <Input
           label="Senha"
           value={password}
+          secureTextEntry
           onChangeText={(text) => setPassword(text)}
-      />
-      <View style={styles.buttonContainer}>
-          <Button style={styles.buttonC} mode="contained" onPress={handleCancel}>
-            Cancelar
-          </Button>
+        />
+        <View style={styles.buttonContainer}>
           <Button style={styles.buttonR} mode="contained" onPress={handleCalcular}>
             Editar
           </Button>
@@ -107,12 +106,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
     flex: 1,
     marginLeft: 15,
-  },
-  buttonC: {
-    backgroundColor: 'red',
-    marginTop: 5,
-    flex: 1,
-    marginRight: 15,
   },
 });
 
