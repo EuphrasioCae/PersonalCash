@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Appbar, TextInput, Button } from 'react-native-paper';
 import { Picker } from '@react-native-community/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -18,6 +18,15 @@ const CadastroTreino = (route) => {
   const navigation = useNavigation();
   const { treino } = route.params ? route.params : {};
 
+  const handleCancel = () => {
+    setNome('');
+    setData('');
+    setInicio('');
+    setDuracao('');
+    setValor('');
+    setPago('');
+  };
+
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
 
@@ -29,6 +38,7 @@ const CadastroTreino = (route) => {
   const [pago, setPago] = useState(0);
 
   useEffect(() => {
+
     if (treino) {
       setNome(treino.nome);
       setData(treino.data);
@@ -40,6 +50,12 @@ const CadastroTreino = (route) => {
   }, [treino]);
 
   const handleCalcular = () => {
+    // Verificar se os campos estão vazios
+    if (!nome || !data || !inicio || !duracao || !valor || !pago) {
+      Alert.alert('Por favor, preencha todos os campos.');
+      return; // Retorna se algum campo estiver vazio
+    }
+
     if (treino) {
       console.log(treino);
 
@@ -137,7 +153,7 @@ const CadastroTreino = (route) => {
           <Button
             style={styles.buttonC}
             mode="contained"
-            onPress={handleCalcular}>
+            onPress={handleCancel}>
             Cancelar
           </Button>
           <Button

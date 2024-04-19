@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Alert } from 'react-native';
 import { Appbar, TextInput, Button, Text } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
@@ -23,6 +23,13 @@ const CadastroCliente = ({navigation, route}) => {
   const [telefone, setTelefone] = useState('');
   const [data, setData] = useState(moment(new Date()).format('DD/MM/YYYY'));
 
+  const handleCancel = () => {
+    setNome('');
+    setSobrenome('');
+    setApelido('');
+    setTelefone('');
+    setData('');
+  };
 
   useEffect(() => {
     if (cliente) {
@@ -35,6 +42,12 @@ const CadastroCliente = ({navigation, route}) => {
   }, [cliente]);
 
   const handleCalcular = () => {
+    // Verificar se os campos estão vazios
+    if (!nome || !sobrenome || !apelido || !telefone || !data ) {
+      Alert.alert('Por favor, preencha todos os campos.');
+      return; // Retorna se algum campo estiver vazio
+    }
+
     if(cliente){
 
       updateClientes(
@@ -113,7 +126,7 @@ const CadastroCliente = ({navigation, route}) => {
           <Button
             style={styles.buttonC}
             mode="contained"
-            onPress={handleCalcular}>
+            onPress={handleCancel}>
             Cancelar
           </Button>
           <Button
